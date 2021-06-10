@@ -47,7 +47,7 @@ class _NewNoteState extends State<NewNote> {
                   description = value;
                 },
                 minLines: 1,
-                maxLines: 3,
+                maxLines: 2,
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
                   hintText: 'Description',
@@ -60,9 +60,17 @@ class _NewNoteState extends State<NewNote> {
               SizedBox(
                 height: 20,
               ),
-              ElevatedButton(
+              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                ElevatedButton(
                 onPressed: () {
-                  if (title != null) {
+                    Navigator.pop(context);
+                },
+                child: Text('Cancel'),
+              ),
+            
+                ElevatedButton(
+                onPressed: () {
+                  if (title != '' && title != null) {
                     final snackBar = SnackBar(
                           content: Text('Saved!', textAlign: TextAlign.center,),
                         );
@@ -71,10 +79,19 @@ class _NewNoteState extends State<NewNote> {
                         CreateNewNotesEvent(title: title!, des: description!));
                     Navigator.pop(context);
                   }
+                  else
+                  {
+                    final snackBar = SnackBar(
+                          content: Text('Title cannot be null', textAlign: TextAlign.center,),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    Navigator.pop(context);
+                  }
                 },
                 child: Text('Save'),
               ),
-            ],
+              ],),
+              ],
           ),
         ),
       ),

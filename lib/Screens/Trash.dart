@@ -39,7 +39,7 @@ class Trash extends StatelessWidget {
                             ['Title']),
                         subtitle: Text(streamSnapshot.data!.docs[
                                 streamSnapshot.data!.docs.length - index - 1]
-                            ['Description']),
+                            ['Description'], overflow: TextOverflow.ellipsis,),
                         trailing: GestureDetector(
                           onTap: () {
                             final snackBar = SnackBar(

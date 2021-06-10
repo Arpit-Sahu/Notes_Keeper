@@ -60,19 +60,24 @@ class CustomCard extends StatelessWidget {
           }));
         },
         title: Text(temp['Title']),
-        subtitle: Text(temp['Description']),
+        subtitle: Text(
+          temp['Description'],
+          overflow: TextOverflow.ellipsis,
+        ),
         trailing: GestureDetector(
           onTap: () {
             final snackBar = SnackBar(
-                          content: Text('Moved to Trash', textAlign: TextAlign.center,),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              content: Text(
+                'Moved to Trash',
+                textAlign: TextAlign.center,
+              ),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
             bloc.add(AddTrashEvent(temp: temp));
 
             String id = temp.id;
 
             bloc.add(DeleteNoteEvent(id: id));
-
           },
           child: Icon(
             Icons.delete,

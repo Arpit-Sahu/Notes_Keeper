@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/bloc/firebase_bloc.dart';
 
 class EditNote extends StatelessWidget {
-  String title;
-  String des;
-  String id;
+  String? title;
+  String? des;
+  String? id;
   EditNote({required this.title, required this.des, required this.id});
 
   @override
@@ -26,8 +26,7 @@ class EditNote extends StatelessWidget {
                 onChanged: (value) {
                   title = value;
                 },
-                minLines: 1,
-                maxLines: 1,
+                maxLength: 30,
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
                   hintText: 'Title',
@@ -46,7 +45,7 @@ class EditNote extends StatelessWidget {
                   des = value;
                 },
                 minLines: 1,
-                maxLines: 5,
+                maxLines: 2,
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
                   hintText: 'Description',
@@ -70,15 +69,27 @@ class EditNote extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      if (title != null) {
+                      print(title);
+                      if (title != '' && title != null) {
                         final snackBar = SnackBar(
-                          content: Text('Saved!', textAlign: TextAlign.center,),
+                          content: Text(
+                            'Saved!',
+                            textAlign: TextAlign.center,
+                          ),
                         );
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         bloc.add(
-                            UpdateNoteEvent(id: id, title: title, des: des));
+                            UpdateNoteEvent(id: id!, title: title!, des: des!));
+                        Navigator.pop(context);
+                      } else {
+                        final snackBar = SnackBar(
+                          content: Text(
+                            'Title cannot be null',
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       }
-                      Navigator.pop(context);
                     },
                     child: Text('Save'),
                   ),
