@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo/Screens/components.dart';
+import 'package:todo/components.dart';
 import 'package:todo/bloc/firebase_bloc.dart';
 
 class Notes extends StatelessWidget {
@@ -28,6 +28,7 @@ class Notes extends StatelessWidget {
                     var temp = streamSnapshot.data!
                         .docs[streamSnapshot.data!.docs.length - index - 1];
                     return CustomCard(
+                      isTrash: false,
                       actionIcon: Icon(
               Icons.delete,
               color: Colors.red,

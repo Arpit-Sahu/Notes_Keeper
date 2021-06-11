@@ -13,6 +13,7 @@ class CustomCard extends StatelessWidget {
     required this.deleteEvent,
     required this.snackbarMessage,
     required this.actionIcon,
+    required this.isTrash,
   }) : super(key: key);
 
   final FirebaseBloc bloc;
@@ -21,15 +22,16 @@ class CustomCard extends StatelessWidget {
   final deleteEvent;
   final String snackbarMessage;
   final Icon actionIcon;
+  final bool isTrash;
 
   @override
   Widget build(BuildContext context) {
     return OpenContainer(
       transitionDuration: Duration(seconds: 1),
       openBuilder: (context, _) =>
-          EditNote(title: temp['Title'], des: temp['Description'], id: temp.id),
+          EditNote(title: temp['Title'], des: temp['Description'], id: temp.id, isTrash: isTrash,),
       closedBuilder: (context, VoidCallback openContainer) => Card(
-        elevation: 5,
+        elevation: 2,
         child: ListTile(
           onTap: openContainer,
           title: Text(temp['Title']),
@@ -46,8 +48,8 @@ class CustomCard extends StatelessWidget {
               bloc.add(deleteEvent);
             },
             child: actionIcon,
+          ),
         ),
-      ),
       ),
     );
   }

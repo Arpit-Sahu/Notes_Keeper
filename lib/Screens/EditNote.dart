@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/bloc/firebase_bloc.dart';
-import 'components.dart';
+import '../components.dart';
 
 class EditNote extends StatelessWidget {
   String? title;
   String? des;
   String? id;
-  EditNote({required this.title, required this.des, required this.id});
+  final bool isTrash;
+  EditNote({required this.title, required this.des, required this.id, required this.isTrash});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,13 @@ class EditNote extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextFormField(
+                readOnly: isTrash,
+                onTap: ()
+                {
+                  if(isTrash)
+                    ScaffoldMessenger.of(context)
+                            .showSnackBar(snackBar('Cannot edit trash note'));
+                },
                 initialValue: title,
                 onChanged: (value) {
                   title = value;
@@ -41,6 +49,13 @@ class EditNote extends StatelessWidget {
                 height: 20,
               ),
               TextFormField(
+                readOnly: isTrash,
+                onTap: ()
+                {
+                  if(isTrash)
+                    ScaffoldMessenger.of(context)
+                            .showSnackBar(snackBar('Cannot edit trash note'));
+                },
                 initialValue: des,
                 onChanged: (value) {
                   des = value;
@@ -72,12 +87,14 @@ class EditNote extends StatelessWidget {
                     onPressed: () {
                       print(title);
                       if (title != '' && title != null) {
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar('Saved!'));
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(snackBar('Saved!'));
                         bloc.add(
                             UpdateNoteEvent(id: id!, title: title!, des: des!));
                         Navigator.pop(context);
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar('Title cannot be null'));
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(snackBar('Title cannot be null'));
                       }
                     },
                     child: Text('Save'),

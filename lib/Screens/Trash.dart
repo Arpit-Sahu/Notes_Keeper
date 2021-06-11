@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/bloc/firebase_bloc.dart';
-import 'components.dart';
+import '../components.dart';
 
 class Trash extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -31,7 +31,7 @@ class Trash extends StatelessWidget {
                     return CustomCard(bloc: bloc, temp: temp, addEvent: AddNoteEvent(temp: temp), deleteEvent: DeleteTrashEvent(id: temp.id),snackbarMessage: 'Restored!',actionIcon: Icon(
                             Icons.restore,
                             color: Colors.blue,
-                          ),);
+                          ), isTrash: true, );
                   });
             }),
       ),

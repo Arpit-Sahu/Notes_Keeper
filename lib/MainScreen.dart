@@ -29,10 +29,9 @@ class _MainScreenState extends State<MainScreen> {
       floatingActionButton: OpenContainer(
         closedShape: CircleBorder(),
         transitionDuration: Duration(seconds: 1),
-              openBuilder: (context, _) => NewNote(),
-              closedBuilder: (context, openContainer) =>
-              FloatingActionButton(
-                onPressed: openContainer,
+        openBuilder: (context, _) => NewNote(),
+        closedBuilder: (context, openContainer) => FloatingActionButton(
+          onPressed: openContainer,
           // onPressed: () {
           //   Navigator.push(context, MaterialPageRoute(builder: (context) {
           //     return NewNote();
