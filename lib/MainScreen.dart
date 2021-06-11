@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo/Screens/NewNote.dart';
 import 'package:todo/Screens/Notes.dart';
 import 'package:todo/Screens/Trash.dart';
+import 'package:animations/animations.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -25,13 +26,20 @@ class _MainScreenState extends State<MainScreen> {
         bucket: bucket,
         child: currentScreen,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return NewNote();
-          }));
-        },
-        child: Icon(Icons.add),
+      floatingActionButton: OpenContainer(
+        closedShape: CircleBorder(),
+        transitionDuration: Duration(seconds: 1),
+              openBuilder: (context, _) => NewNote(),
+              closedBuilder: (context, openContainer) =>
+              FloatingActionButton(
+                onPressed: openContainer,
+          // onPressed: () {
+          //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+          //     return NewNote();
+          //   }));
+          // },
+          child: Icon(Icons.add),
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(

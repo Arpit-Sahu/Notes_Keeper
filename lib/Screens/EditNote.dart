@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/bloc/firebase_bloc.dart';
+import 'components.dart';
 
 class EditNote extends StatelessWidget {
   String? title;
@@ -71,24 +72,12 @@ class EditNote extends StatelessWidget {
                     onPressed: () {
                       print(title);
                       if (title != '' && title != null) {
-                        final snackBar = SnackBar(
-                          content: Text(
-                            'Saved!',
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar('Saved!'));
                         bloc.add(
                             UpdateNoteEvent(id: id!, title: title!, des: des!));
                         Navigator.pop(context);
                       } else {
-                        final snackBar = SnackBar(
-                          content: Text(
-                            'Title cannot be null',
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar('Title cannot be null'));
                       }
                     },
                     child: Text('Save'),

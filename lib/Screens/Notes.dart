@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo/Screens/EditNote.dart';
+import 'package:todo/Screens/components.dart';
 import 'package:todo/bloc/firebase_bloc.dart';
 
 class Notes extends StatelessWidget {
@@ -28,62 +28,17 @@ class Notes extends StatelessWidget {
                     var temp = streamSnapshot.data!
                         .docs[streamSnapshot.data!.docs.length - index - 1];
                     return CustomCard(
-                      bloc: bloc,
-                      temp: temp,
-                    );
+                      actionIcon: Icon(
+              Icons.delete,
+              color: Colors.red,
+            ),
+                      snackbarMessage: 'Moved to Trash',
+                        bloc: bloc,
+                        temp: temp,
+                        addEvent: AddTrashEvent(temp: temp),
+                        deleteEvent: DeleteNoteEvent(id: temp.id));
                   });
             }),
-      ),
-    );
-  }
-}
-
-class CustomCard extends StatelessWidget {
-  const CustomCard({
-    Key? key,
-    required this.bloc,
-    required this.temp,
-  }) : super(key: key);
-
-  final FirebaseBloc bloc;
-  final QueryDocumentSnapshot<Object?> temp;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: ListTile(
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return EditNote(
-                title: temp['Title'], des: temp['Description'], id: temp.id);
-          }));
-        },
-        title: Text(temp['Title']),
-        subtitle: Text(
-          temp['Description'],
-          overflow: TextOverflow.ellipsis,
-        ),
-        trailing: GestureDetector(
-          onTap: () {
-            final snackBar = SnackBar(
-              content: Text(
-                'Moved to Trash',
-                textAlign: TextAlign.center,
-              ),
-            );
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            bloc.add(AddTrashEvent(temp: temp));
-
-            String id = temp.id;
-
-            bloc.add(DeleteNoteEvent(id: id));
-          },
-          child: Icon(
-            Icons.delete,
-            color: Colors.red,
-          ),
-        ),
       ),
     );
   }
