@@ -5,7 +5,6 @@ import 'package:todo/bloc/firebase_bloc.dart';
 import '../components.dart';
 
 class Trash extends StatelessWidget {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +17,16 @@ class Trash extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: StreamBuilder<QuerySnapshot>(
-            stream: _firestore.collection('TrashDatabase').snapshots(),
+            stream: BlocProvider.of<FirebaseBloc>(context).getTrashStream(),
             builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
               if (!streamSnapshot.hasData) {
                 return Center(child: CircularProgressIndicator());
               }
-              return ListView.builder(
+              if (streamSnapshot.hasError)
+                return Center(child: Text('An Error has occured!, retry again'));
+              return streamSnapshot.data!.docs.length == 0?
+                Center(child: Text('Nothing to show, Try Adding notes'),) : 
+              ListView.builder(
                   itemCount: streamSnapshot.data!.docs.length,
                   itemBuilder: (context, index) {
                     var temp = streamSnapshot.data!

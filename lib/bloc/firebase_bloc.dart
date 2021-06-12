@@ -70,4 +70,14 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
       'Description': des,
     });
   }
+
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getNotesStream() {
+    return _firestore.collection('notesDatabase').snapshots();
+  }
+
+    Stream<QuerySnapshot<Map<String, dynamic>>> getTrashStream() {
+    return _firestore.collection('TrashDatabase').snapshots();
+  }
+
 }
