@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/bloc/firebase_bloc.dart';
+import 'package:todo/components.dart';
 
 class NewNote extends StatefulWidget {
   @override
@@ -10,6 +11,8 @@ class NewNote extends StatefulWidget {
 class _NewNoteState extends State<NewNote> {
   String? title;
   String? description;
+  String? videoLink;
+  bool checked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -58,40 +61,92 @@ class _NewNoteState extends State<NewNote> {
                 ),
               ),
               SizedBox(
-                height: 20,
+                height: 30,
               ),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-                ElevatedButton(
-                onPressed: () {
-                    Navigator.pop(context);
-                },
-                child: Text('Cancel'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      Checkbox(
+                          value: checked,
+                          onChanged: (val) {
+                            setState(() {
+                              checked = val!;
+                            });
+                          }),
+                      Text(
+                        'Video',
+                        style: TextStyle(color: Colors.grey, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                  Flexible(
+                    child: TextFormField(
+                      onChanged: (value) {
+                        videoLink = value;
+                      },
+                      onTap: () {
+                        if (!checked)
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              snackBar('Click on checkbox first'));
+                      },
+                      readOnly: !checked,
+                      minLines: 1,
+                      maxLines: 2,
+                      keyboardType: TextInputType.multiline,
+                      decoration: InputDecoration(
+                        hintText: 'Video Link',
+                        hintStyle: TextStyle(color: Colors.grey),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            
-                ElevatedButton(
-                onPressed: () {
-                  if (title != '' && title != null) {
-                    final snackBar = SnackBar(
-                          content: Text('Saved!', textAlign: TextAlign.center,),
+              SizedBox(
+                height: 30,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (title != '' && title != null) {
+                        final snackBar = SnackBar(
+                          content: Text(
+                            'Saved!',
+                            textAlign: TextAlign.center,
+                          ),
                         );
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    bloc.add(
-                        CreateNewNotesEvent(title: title!, des: description!));
-                    Navigator.pop(context);
-                  }
-                  else
-                  {
-                    final snackBar = SnackBar(
-                          content: Text('Title cannot be null', textAlign: TextAlign.center,),
+                        bloc.add(CreateNewNotesEvent(
+                            title: title!, des: description!));
+                        Navigator.pop(context);
+                      } else {
+                        final snackBar = SnackBar(
+                          content: Text(
+                            'Title cannot be null',
+                            textAlign: TextAlign.center,
+                          ),
                         );
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    Navigator.pop(context);
-                  }
-                },
-                child: Text('Save'),
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: Text('Save'),
+                  ),
+                ],
               ),
-              ],),
-              ],
+            ],
           ),
         ),
       ),
