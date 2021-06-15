@@ -16,7 +16,9 @@ class DeleteTrashEvent extends FirebaseEvent {
 class CreateNewNotesEvent extends FirebaseEvent {
   final String title;
   final String des;
-  CreateNewNotesEvent({required this.title, required this.des});
+  final bool hasVideo;
+  final String videoLink;
+  CreateNewNotesEvent({required this.title, required this.des, required this.hasVideo, required this.videoLink});
 }
 
 class AddTrashEvent extends FirebaseEvent {

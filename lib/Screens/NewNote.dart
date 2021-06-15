@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/bloc/firebase_bloc.dart';
-import 'package:todo/components.dart';
 
 class NewNote extends StatefulWidget {
   @override
@@ -64,7 +63,7 @@ class _NewNoteState extends State<NewNote> {
                 height: 30,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Column(
                     children: [
@@ -81,25 +80,23 @@ class _NewNoteState extends State<NewNote> {
                       ),
                     ],
                   ),
-                  Flexible(
-                    child: TextFormField(
-                      onChanged: (value) {
-                        videoLink = value;
-                      },
-                      onTap: () {
-                        if (!checked)
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              snackBar('Click on checkbox first'));
-                      },
-                      readOnly: !checked,
-                      minLines: 1,
-                      maxLines: 2,
-                      keyboardType: TextInputType.multiline,
-                      decoration: InputDecoration(
-                        hintText: 'Video Link',
-                        hintStyle: TextStyle(color: Colors.grey),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  Visibility(
+                    visible: checked,
+                                      child: Flexible(
+                      child: TextFormField(
+                        onChanged: (value) {
+                          videoLink = value;
+                        },
+                        readOnly: !checked,
+                        minLines: 1,
+                        maxLines: 2,
+                        keyboardType: TextInputType.multiline,
+                        decoration: InputDecoration(
+                          hintText: 'Video Link',
+                          hintStyle: TextStyle(color: Colors.grey),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          ),
                         ),
                       ),
                     ),
@@ -129,6 +126,8 @@ class _NewNoteState extends State<NewNote> {
                         );
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         bloc.add(CreateNewNotesEvent(
+                            hasVideo: checked,
+                            videoLink: checked?videoLink.toString():'null',
                             title: title!, des: description!));
                         Navigator.pop(context);
                       } else {

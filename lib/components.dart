@@ -29,7 +29,9 @@ class CustomCard extends StatelessWidget {
     return OpenContainer(
       transitionDuration: Duration(seconds: 1),
       openBuilder: (context, _) =>
-          EditNote(title: temp['Title'], des: temp['Description'], id: temp.id, isTrash: isTrash,),
+          EditNote(title: temp['Title'], des: temp['Description'], id: temp.id, isTrash: isTrash,
+          hasVideo: temp['HasVideo'], videoLink: temp['HasVideo']?temp['VideoLink']:null 
+          ,),
       closedBuilder: (context, VoidCallback openContainer) => Card(
         elevation: 2,
         child: ListTile(
@@ -39,7 +41,14 @@ class CustomCard extends StatelessWidget {
             temp['Description'],
             overflow: TextOverflow.ellipsis,
           ),
-          trailing: GestureDetector(
+          trailing:
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+            Visibility(
+              visible: temp['HasVideo'],
+              child: Icon(Icons.play_arrow)),
+            GestureDetector(
             onTap: () {
               ScaffoldMessenger.of(context)
                   .showSnackBar(snackBar(snackbarMessage));
@@ -49,6 +58,8 @@ class CustomCard extends StatelessWidget {
             },
             child: actionIcon,
           ),
+          ],)
+           
         ),
       ),
     );

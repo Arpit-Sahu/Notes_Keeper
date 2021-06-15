@@ -27,7 +27,7 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
     } else if (event is UpdateNoteEvent) {
       await update(event.id, event.title, event.des);
     } else if (event is CreateNewNotesEvent) {
-      await createNewNote(event.title, event.des);
+      await createNewNote(event.title, event.des, event.hasVideo, event.videoLink);
     }
   }
 
@@ -44,6 +44,8 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
       {
         'Title': temp['Title'],
         'Description': temp['Description'],
+        'HasVideo': temp['HasVideo'],
+        'VideoLink': temp['HasVideo']?temp['VideoLink']:null,
       },
     );
   }
@@ -53,14 +55,18 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
       {
         'Title': temp['Title'],
         'Description': temp['Description'],
+        'HasVideo': temp['HasVideo'],
+        'VideoLink': temp['HasVideo']?temp['VideoLink']:null,
       },
     );
   }
 
-  Future<void> createNewNote(String title, String des) async{
+  Future<void> createNewNote(String title, String des, bool hasVideo, String videoLink) async{
     await _firestore.collection('notesDatabase').add({
                       'Title': title,
                       'Description': des,
+                      'HasVideo': hasVideo,
+                      'VideoLink': videoLink,
                     });
   }
 

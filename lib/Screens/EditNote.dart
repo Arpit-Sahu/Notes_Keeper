@@ -1,18 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/bloc/firebase_bloc.dart';
+import 'package:video_player/video_player.dart';
 import '../components.dart';
 
-class EditNote extends StatelessWidget {
+class EditNote extends StatefulWidget {
   String? title;
   String? des;
   String? id;
   final bool isTrash;
-  EditNote({required this.title, required this.des, required this.id, required this.isTrash});
+  final bool hasVideo;
+  final String? videoLink;
+  // final bool hasVideo;
+  EditNote({required this.title, required this.des, required this.id, required this.isTrash, required this.hasVideo, this.videoLink});
+
+  @override
+  _EditNoteState createState() => _EditNoteState();
+}
+
+class _EditNoteState extends State<EditNote> {
+
+ late VideoPlayerController _controller;
+ late Future<void> _initializeVideoPlayerFuture;
+
+  void initState() {
+    _controller = VideoPlayerController.network(
+        widget.hasVideo? widget.videoLink! : '');
+    //_controller = VideoPlayerController.asset("videos/sample_video.mp4");
+    _initializeVideoPlayerFuture = _controller.initialize();
+    _controller.setLooping(true);
+    _controller.setVolume(1.0);
+    super.initState();
+  }
+ 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+   
+
 
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<FirebaseBloc>(context);
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Note'),
@@ -23,17 +56,66 @@ class EditNote extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextFormField(
-                readOnly: isTrash,
+
+              Visibility(
+                visible: widget.hasVideo,
+                              child: Column(
+                  children: [
+                    
+                FutureBuilder(
+        future: _initializeVideoPlayerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Center(
+                child: AspectRatio(
+                  aspectRatio: _controller.value.aspectRatio,
+                  child: VideoPlayer(_controller),
+                ),
+            );
+          } else {
+            return Center(
+                child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
+      SizedBox(
+        height: 10,
+      ),
+      ElevatedButton(
+        onPressed: () {
+          setState(() {
+            if (_controller.value.isPlaying) {
+                _controller.pause();
+            } else {
+                _controller.play();
+            }
+          });
+        },
+        child:
+            Icon(_controller.value.isPlaying ? Icons.pause : Icons.play_arrow),
+      ),
+      SizedBox(
+        height: 50,
+      ),
+                  ],
+                ),
+              ),
+
+
+              Column(
+                children: [
+                TextFormField(
+                readOnly: widget.isTrash,
                 onTap: ()
                 {
-                  if(isTrash)
+                  if(widget.isTrash)
                     ScaffoldMessenger.of(context)
                             .showSnackBar(snackBar('Cannot edit trash note'));
                 },
-                initialValue: title,
+                initialValue: widget.title,
                 onChanged: (value) {
-                  title = value;
+                  widget.title = value;
                 },
                 maxLength: 30,
                 keyboardType: TextInputType.multiline,
@@ -49,16 +131,16 @@ class EditNote extends StatelessWidget {
                 height: 20,
               ),
               TextFormField(
-                readOnly: isTrash,
+                readOnly: widget.isTrash,
                 onTap: ()
                 {
-                  if(isTrash)
+                  if(widget.isTrash)
                     ScaffoldMessenger.of(context)
                             .showSnackBar(snackBar('Cannot edit trash note'));
                 },
-                initialValue: des,
+                initialValue: widget.des,
                 onChanged: (value) {
-                  des = value;
+                  widget.des = value;
                 },
                 minLines: 1,
                 maxLines: 2,
@@ -85,12 +167,12 @@ class EditNote extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      print(title);
-                      if (title != '' && title != null) {
+                      print(widget.title);
+                      if (widget.title != '' && widget.title != null) {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(snackBar('Saved!'));
                         bloc.add(
-                            UpdateNoteEvent(id: id!, title: title!, des: des!));
+                            UpdateNoteEvent(id: widget.id!, title: widget.title!, des: widget.des!));
                         Navigator.pop(context);
                       } else {
                         ScaffoldMessenger.of(context)
@@ -101,7 +183,10 @@ class EditNote extends StatelessWidget {
                   ),
                 ],
               ),
-            ],
+            
+
+              ],),
+              ],
           ),
         ),
       ),
