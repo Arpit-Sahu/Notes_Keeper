@@ -9,9 +9,8 @@ class EditNote extends StatefulWidget {
   String? des;
   String? id;
   final bool isTrash;
-  final bool hasVideo;
-  final String? videoLink;
-  // final bool hasVideo;
+  bool hasVideo;
+  String? videoLink;
   EditNote({required this.title, required this.des, required this.id, required this.isTrash, required this.hasVideo, this.videoLink});
 
   @override
@@ -157,6 +156,51 @@ class _EditNoteState extends State<EditNote> {
                 height: 20,
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                  children: [
+                    Checkbox(
+                    value: widget.hasVideo,
+                    onChanged: (val) {
+                      if(!widget.isTrash){
+                      setState(() {
+                        widget.hasVideo = val!;
+                      });
+                      }
+                    }),
+                    Text(
+                      'Video',
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                    ),
+                  ],
+                    ),
+                  Visibility(
+                    visible: widget.hasVideo,
+                      child: Flexible(
+                      child: TextFormField(
+                        initialValue: widget.videoLink,
+                        onChanged: (value) {
+                          widget.videoLink = value;
+                        },
+                        readOnly: widget.isTrash,
+                        minLines: 1,
+                        maxLines: 2,
+                        keyboardType: TextInputType.multiline,
+                        decoration: InputDecoration(
+                          hintText: 'Video Link',
+                          hintStyle: TextStyle(color: Colors.grey),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ElevatedButton(
@@ -172,7 +216,7 @@ class _EditNoteState extends State<EditNote> {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(snackBar('Saved!'));
                         bloc.add(
-                            UpdateNoteEvent(id: widget.id!, title: widget.title!, des: widget.des!));
+                            UpdateNoteEvent(id: widget.id!, title: widget.title!, des: widget.des!, hasVideo: widget.hasVideo, videoLink: widget.hasVideo? widget.videoLink!:''));
                         Navigator.pop(context);
                       } else {
                         ScaffoldMessenger.of(context)

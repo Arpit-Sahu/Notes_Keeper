@@ -25,7 +25,7 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
     } else if (event is AddNoteEvent) {
       await addNote(event.temp);
     } else if (event is UpdateNoteEvent) {
-      await update(event.id, event.title, event.des);
+      await update(event.id, event.title, event.des, event.hasVideo, event.videoLink);
     } else if (event is CreateNewNotesEvent) {
       await createNewNote(event.title, event.des, event.hasVideo, event.videoLink);
     }
@@ -66,14 +66,16 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
                       'Title': title,
                       'Description': des,
                       'HasVideo': hasVideo,
-                      'VideoLink': videoLink,
+                      'VideoLink': hasVideo?videoLink:null,
                     });
   }
 
-  Future<void> update(String id, String title, String des) async {
+  Future<void> update(String id, String title, String des, bool hasVideo, String videoLink ) async {
     await _firestore.collection('notesDatabase').doc(id).update({
       'Title': title,
       'Description': des,
+      'HasVideo': hasVideo,
+      'VideoLink': hasVideo?videoLink:null,
     });
   }
 

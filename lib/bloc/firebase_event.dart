@@ -35,9 +35,13 @@ class UpdateNoteEvent extends FirebaseEvent {
   final String id;
   final String title;
   final String des;
+  final bool hasVideo;
+  final String videoLink;
   UpdateNoteEvent({
     required this.id,
     required this.title,
     required this.des,
+    required this.hasVideo,
+    required this.videoLink,
   });
 }
