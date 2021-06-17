@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:todo/Screens/EditNote.dart';
 import 'package:todo/bloc/firebase_bloc.dart';
+import 'package:todo/main.dart';
 
 class CustomCard extends StatelessWidget {
   const CustomCard({
@@ -74,3 +76,13 @@ SnackBar snackBar(String message) {
     ),
   );
 }
+
+Future<void> getConnectionStatus() async{
+    var connectionStatus = await Connectivity().checkConnectivity();
+    print(connectionStatus.toString());
+    // MyApp.isOnline = false;
+    if(connectionStatus.toString() == 'ConnectivityResult.none')
+    MyApp.isOnline = false;
+    else
+    MyApp.isOnline = true;
+  }

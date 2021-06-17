@@ -14,7 +14,6 @@ class Test extends StatelessWidget {
               int i = await DatabaseHelper.instance.insertNote({
                 DatabaseHelper.title : 'note2',
                 DatabaseHelper.description : 'offline',
-                DatabaseHelper.hasVideo : false,
               });
               print(i);
             }, child: Text('Add Note')),

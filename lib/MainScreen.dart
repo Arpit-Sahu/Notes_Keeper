@@ -1,8 +1,12 @@
+import 'dart:isolate';
+
 import 'package:flutter/material.dart';
 import 'package:todo/Screens/NewNote.dart';
 import 'package:todo/Screens/Notes.dart';
 import 'package:todo/Screens/Trash.dart';
 import 'package:animations/animations.dart';
+import 'package:todo/components.dart';
+import 'package:todo/main.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -31,12 +35,10 @@ class _MainScreenState extends State<MainScreen> {
         transitionDuration: Duration(seconds: 1),
         openBuilder: (context, _) => NewNote(),
         closedBuilder: (context, openContainer) => FloatingActionButton(
-          onPressed: openContainer,
-          // onPressed: () {
-          //   Navigator.push(context, MaterialPageRoute(builder: (context) {
-          //     return NewNote();
-          //   }));
-          // },
+          onPressed: MyApp.isOnline? openContainer : (){
+            ScaffoldMessenger.of(context)
+              .showSnackBar(snackBar('No internet Connection'));
+          },
           child: Icon(Icons.add),
         ),
       ),

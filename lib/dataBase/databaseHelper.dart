@@ -12,8 +12,6 @@ class DatabaseHelper{
 
   static final title = 'Title';
   static final description  = 'Description';
-  static final hasVideo = 'HasVideo';
-  static final videoLink = 'VideoLink';
 
   DatabaseHelper._privateContructor();
   static final DatabaseHelper instance = DatabaseHelper._privateContructor();
@@ -38,12 +36,12 @@ class DatabaseHelper{
   {
     await db.execute(
       '''
-      CREATE TABLE $_notesTableName ($title, $description, $hasVideo, $videoLink)
+      CREATE TABLE $_notesTableName ($title, $description)
       '''
     );
     db.execute(
       '''
-      CREATE TABLE $_trashTableName ( $title, $description, $hasVideo, $videoLink )
+      CREATE TABLE $_trashTableName ( $title, $description)
       '''
     );
   }
@@ -85,6 +83,11 @@ class DatabaseHelper{
     var item = await db.query(_trashTableName,where: '$title = ?', whereArgs: [id]);
     await db.delete(_trashTableName,where: '$title = ?', whereArgs: [id]);
     return await db.insert(_notesTableName, item[0]);
+  }
+
+  Future<int> updateNote(String id, String des, String newId, String newDes) async{
+    Database db = await instance.database;
+    return await db.rawUpdate('UPDATE $_notesTableName SET COLUMN $title = $newId, $description = $newDes where $title = $id AND $description = $des;');
   }
 
 }

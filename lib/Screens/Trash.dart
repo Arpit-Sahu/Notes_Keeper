@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/bloc/firebase_bloc.dart';
+import 'package:todo/main.dart';
 import '../components.dart';
 
 class Trash extends StatelessWidget {
@@ -16,7 +17,8 @@ class Trash extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: StreamBuilder<QuerySnapshot>(
+        child: MyApp.isOnline?
+         StreamBuilder<QuerySnapshot>(
             stream: BlocProvider.of<FirebaseBloc>(context).getTrashStream(),
             builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
               if (!streamSnapshot.hasData) {
@@ -36,44 +38,37 @@ class Trash extends StatelessWidget {
                             color: Colors.blue,
                           ), isTrash: true, );
                   });
-            }),
+            })
+            :
+            FutureBuilder<List<Map<String, dynamic>>>(
+              future: bloc.allTrashDB(),
+              builder: (context, snapshot){
+                if(snapshot.hasData)
+                {
+                  return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    var temp = snapshot.data![snapshot.data!.length - index -1];
+                    return Card(
+                      elevation: 2,
+                        child: ListTile(
+                        title: Text(temp['Title']),
+                        subtitle: Text(temp['Description']),
+                        trailing: Icon(Icons.wifi_off),
+                      ),
+                    );
+                  }
+                  );
+                }
+                else if(snapshot.connectionState == ConnectionState.waiting)
+                  return Center(child: CircularProgressIndicator());
+                else{
+                return Center(child: Text('Error! please try Again'));
+              }
+              },
+            )
+
       ),
     );
   }
 }
-
-// Card(
-//                       elevation: 5,
-//                       child: ListTile(
-//                         onTap: () {
-//                         ScaffoldMessenger.of(context).showSnackBar(snackBar('Cannot edit while on Trash!'));
-//                         },
-//                         title: Text(streamSnapshot.data!.docs[
-//                                 streamSnapshot.data!.docs.length - index - 1]
-//                             ['Title']),
-//                         subtitle: Text(streamSnapshot.data!.docs[
-//                                 streamSnapshot.data!.docs.length - index - 1]
-//                             ['Description'], overflow: TextOverflow.ellipsis,),
-//                         trailing: GestureDetector(
-//                           onTap: () {
-//                             ScaffoldMessenger.of(context)
-//                                 .showSnackBar(snackBar('Restored!'));
-//                             var temp = streamSnapshot.data!.docs[
-//                                 streamSnapshot.data!.docs.length - index - 1];
-
-//                             bloc.add(AddNoteEvent(temp: temp));
-//                             String id = streamSnapshot
-//                                 .data!
-//                                 .docs[streamSnapshot.data!.docs.length -
-//                                     index -
-//                                     1]
-//                                 .id;
-//                             bloc.add(DeleteTrashEvent(id: id));
-//                           },
-//                           child: Icon(
-//                             Icons.restore,
-//                             color: Colors.blue,
-//                           ),
-//                         ),
-//                       ),
-//                     );

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
+import 'package:todo/dataBase/databaseHelper.dart';
 
 part 'firebase_event.dart';
 part 'firebase_state.dart';
@@ -29,6 +30,24 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
     } else if (event is CreateNewNotesEvent) {
       await createNewNote(event.title, event.des, event.hasVideo, event.videoLink);
     }
+    else if(event is NotesDB){
+      await allNotesDB();
+    }
+    else if(event is TrashDB){
+      await allTrashDB();
+    }
+    else if(event is NewNoteDB)
+    {
+      await newNoteDB(event.title, event.des);
+    }
+    else if(event is MoveToNotesDB)
+    {
+      await moveToNotesDB(event.title);
+    }
+    else if(event is MoveToTrashDB)
+    {
+      await moveToTrashDB(event.title);
+    }
   }
 
   Future<void> deleteNotes(String id) async {
@@ -48,6 +67,7 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
         'VideoLink': temp['HasVideo']?temp['VideoLink']:null,
       },
     );
+    moveToTrashDB(temp['Title']);
   }
 
   Future<void> addNote(var temp) async {
@@ -59,6 +79,7 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
         'VideoLink': temp['HasVideo']?temp['VideoLink']:null,
       },
     );
+    moveToNotesDB(temp['Title']);
   }
 
   Future<void> createNewNote(String title, String des, bool hasVideo, String videoLink) async{
@@ -88,4 +109,36 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
     return _firestore.collection('TrashDatabase').snapshots();
   }
 
-}
+  Future<List<Map<String, dynamic>>> allNotesDB() async {
+    List<Map<String, dynamic>> queryRow = await DatabaseHelper.instance.queryAllNotes();
+    return queryRow;
+  }
+
+  Future<List<Map<String, dynamic>>> allTrashDB() async {
+    List<Map<String, dynamic>> queryRow = await DatabaseHelper.instance.queryAllTrash();
+    return queryRow;
+  }
+
+  Future<void> newNoteDB(String title, String des) async {
+
+    await DatabaseHelper.instance.insertNote({
+      DatabaseHelper.title : title,
+      DatabaseHelper.description : des,
+    });
+  }
+
+  Future<void> moveToTrashDB(String title) async {
+      await DatabaseHelper.instance.moveToTrash(title);
+    }
+
+  Future<void> moveToNotesDB(String title) async {
+      await DatabaseHelper.instance.moveToNotes(title);
+  }
+
+  // Future<void> updateNoteDB(String title, String des) async {
+  //     // await DatabaseHelper.instance;
+  // }
+
+  }
+
+

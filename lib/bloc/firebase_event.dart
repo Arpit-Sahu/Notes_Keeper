@@ -45,3 +45,26 @@ class UpdateNoteEvent extends FirebaseEvent {
     required this.videoLink,
   });
 }
+
+class NotesDB extends FirebaseEvent{}
+
+class TrashDB extends FirebaseEvent{}
+
+class NewNoteDB extends FirebaseEvent{
+  final String title;
+  final String des;
+  NewNoteDB({required this.title, required this.des});
+}
+
+class MoveToTrashDB extends FirebaseEvent{
+  final String title;
+  MoveToTrashDB({required this.title});
+}
+
+class MoveToNotesDB extends FirebaseEvent{
+  final String title;
+  MoveToNotesDB({required this.title});
+}
+
+
+
